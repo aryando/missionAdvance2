@@ -6,6 +6,17 @@ const api = axios.create({
     baseURL: API_BASE_URL,
 });
 
+export const getData = async (courses) => {
+    try {
+        const response = await api.get(courses);
+        return response.data;
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        throw error;
+    }
+}
+
+
 export const fetchUsers = async () => {
     try {
         const response = await api.get("/");

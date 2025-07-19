@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import CourseCard from "./CourseCard";
 import { useState, useEffect } from "react";
-import api from "../services/api";
+import { getData } from "../services/api";
 import { setCourses } from "../store/courseSlice";
 
 export default function ListView() {
@@ -14,14 +14,11 @@ export default function ListView() {
   const coursesPerPage = 9;
 
   useEffect(() => {
-    api.get("/courses")
-      .then(res => {
-        dispatch(setCourses(res.data));
+    getData("/courses")
+      .then(data => {
+        dispatch(setCourses(data));
       })
-      .catch(err => {
-        console.error("Gagal mengambil data courses:", err);
-      });
-  }, [dispatch]);
+    }, []);
 
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(search.toLowerCase())
