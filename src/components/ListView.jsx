@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import CourseCard from "./CourseCard";
 import { useState, useEffect } from "react";
-import { getData } from "../services/api";
+import { getData, addData, updateData, deleteData } from "../services/api";
 import { setCourses } from "../store/courseSlice";
 
 export default function ListView() {
@@ -15,11 +15,41 @@ export default function ListView() {
 
   useEffect(() => {
     getData("/courses")
-      .then(data => {
-        dispatch(setCourses(data));
+      .then(res => {
+        dispatch(setCourses(res));
       })
     }, []);
 
+
+    const handleAdd = async () => {
+      const newCourse = {
+          image: "https://ucarecdn.com/23287a76-01a2-4c5b-aa42-efbbf211238b/-/preview/1000x561/",
+          title: "Big 4 Auditor Financial Analyst",
+          avatar: "https://ucarecdn.com/cf200355-bb97-41ae-a1dd-4b2e857a3ceb/-/preview/200x200/",
+          name: "Jenna Ortega",
+          role: "Senior Accountant di Gojek",
+          rating: 3.5,
+          price: "Rp. 300K",
+          id: Date.now()
+      };
+      const result = await addData("/courses", newCourse);
+      console.log("Berhasil ditambahkan:", result);
+    };
+
+    const handleUpdate = async (id) => {
+      const updatedCourse = {
+          title: "Big 4 Auditor (updated)",
+      };
+      const result = await updateData("/courses", id, updatedCourse);
+      console.log("Berhasih diperbarui:", result);
+    };
+
+    const handleDelete = async (id) => {
+      const result = await deleteData("/courses", id);
+      console.log("Berhasil menghapus:", result);
+    };
+
+    
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(search.toLowerCase())
   );

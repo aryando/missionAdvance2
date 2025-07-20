@@ -17,6 +17,36 @@ export const getData = async (courses) => {
 }
 
 
+export const addData = async (endpoint, payload) => {
+    try {
+        const response = await api.post(endpoint, payload);
+        return response.data;
+    } catch (error) {
+        console.error("Gagal menambahkan data:", error);
+        throw error;
+    }
+};
+
+export const updateData = async (endpoint, id, payload) => {
+    try {
+        const response = await api.put(`${endpoint}/${id}`, payload);
+        return response.data;
+    } catch (error) {
+        console.error("Gagal memperbarui data:", error);
+        throw error;
+    }
+};
+
+export const deleteData = async (endpoint, id) => {
+    try {
+        const response = await api.delete(`${endpoint}/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Gagal menghapus data:", error);
+        throw error;
+    }
+};
+
 export const fetchUsers = async () => {
     try {
         const response = await api.get("/");
