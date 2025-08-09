@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import api from '../services/api';
-import { useDispatch, useSelector } from 'react-reduct';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/auth/authSlice';
 
 export default function Login () {

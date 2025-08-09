@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import CourseCard from "./CourseCard";
 import { useState, useEffect } from "react";
-import { getData, addData, updateData, deleteData } from "../services/api";
+import { getCourses, addCourse, updateCourse, deleteCourse } from "../services/api";
 import { setCourses } from "../store/courseSlice";
 
 export default function ListView() {
@@ -21,50 +21,38 @@ export default function ListView() {
   const coursesPerPage = 9;
 
   useEffect(() => {
-    getData("/courses").then((res) => {
-      dispatch(setCourses(res));
-    });
-  }, [dispatch]);
+  getCourses().then((res) => {
+    dispatch(setCourses(res));
+  });
+}, [dispatch]);
 
-  const handleAddOrUpdate = async () => {
-    const newCourse = {
-      ...form,
-      image:
-        "https://ucarecdn.com/23287a76-01a2-4c5b-aa42-efbbf211238b/-/preview/1000x561/",
-      avatar:
-        "https://ucarecdn.com/cf200355-bb97-41ae-a1dd-4b2e857a3ceb/-/preview/200x200/",
-      rating: 4.5,
-    };
+const handleAddOrUpdate = async () => {
+  const newCourse = {
+    ...form,
+    image: "https://ucarecdn.com/23287a76-01a2-4c5b-aa42-efbbf211238b/-/preview/1000x561/",
+    avatar: "https://ucarecdn.com/cf200355-bb97-41ae-a1dd-4b2e857a3ceb/-/preview/200x200/",
+    rating: 4.5,
+  };
 
-    if (form.id) {
-      await updateData("courses", form.id, newCourse);
-    } else {
-      await addData("courses", newCourse);
-    }
+  if (form.id) {
+    await updateCourse(form.id, newCourse);
+  } else {
+    await addCourse(newCourse);
+  }
 
-    const updatedCourses = await getData("/courses");
+  const updatedCourses = await getCourses();
+  dispatch(setCourses(updatedCourses));
+  setForm({ id: null, title: "", name: "", role: "", price: "" });
+};
+
+const handleDelete = async (course) => {
+  if (window.confirm("Yakin ingin menghapus data ini?")) {
+    await deleteCourse(course.id);
+    const updatedCourses = await getCourses();
     dispatch(setCourses(updatedCourses));
-    setForm({ id: null, title: "", name: "", role: "", price: "" });
-  };
+  }
+};
 
-  const handleEdit = (course) => {
-    setForm({
-      id: course.id,
-      title: course.title,
-      name: course.name,
-      role: course.role,
-      price: course.price,
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleDelete = async (course) => {
-    if (window.confirm("Yakin ingin menghapus data ini?")) {
-      await deleteData("courses", course.id);
-      const updatedCourses = await getData("/courses");
-      dispatch(setCourses(updatedCourses));
-    }
-  };
 
   const filteredCourses = courses.filter((course) =>
     course.title.toLowerCase().includes(search.toLowerCase())
