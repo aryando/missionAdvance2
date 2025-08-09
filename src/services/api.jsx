@@ -37,9 +37,9 @@ export const updateData = async (endpoint, id, payload) => {
     }
 };
 
-export const deleteData = async (endpoint, id) => {
+export const deleteData = async (endpoint) => {
     try {
-        const response = await api.delete(`${endpoint}/${id}`);
+        const response = await api.delete(`${endpoint}`);
         return response.data;
     } catch (error) {
         console.error("Gagal menghapus data:", error);

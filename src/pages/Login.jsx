@@ -1,37 +1,34 @@
-import Header from "../components/Header";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInput";
-import api from "../services/api";
+import Header from '../components/Header';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import FormInput from '../components/FormInput';
+import api from '../services/api';
+import { useDispatch, useSelector } from 'react-reduct';
+import { loginUser } from '../features/auth/authSlice';
+
 export default function Login () {
     const navigate = useNavigate();
+    const dispatch = iseDispatch();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
+
+    const { loading, error, isLoggedIn } = useSelector((state) => state.auth);
     
     const onSubmit = (data) => {
-        api.get("/users")
-        .then(res => {
-            const users = res.data;
-            const user= users.find(u => u.email === data.email && u.password === data.password);
-
-            if(!user) {
-                alert("Email atau kata sandi salah!");
-                return;
-            }
-            localStorage.setItem("isLogin", true);
-            localStorage.setItem("user", JSON.stringify(user));
-            alert("Login berhasil!");
-            navigate("/Beranda");
-        })
-        .catch(err => {
-            console.error("Gagal login:",err);
-            alert("Gagal login, silahkan coba lagi!");
-        })
-        
+        dispatch(loginUser(data))
+            .unwrap()
+            .then(user => {
+                alert("Login berhasil!");
+                navigate("/Beranda");
+            })
+            .catch(err => {
+                console.error("Gagal login:",err);
+                alert("Gagal login, silahkan coba lagi!");
+            });
     };
     return (
         <>
