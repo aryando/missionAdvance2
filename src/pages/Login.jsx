@@ -8,7 +8,7 @@ import { loginUser } from '../features/auth/authSlice';
 
 export default function Login () {
     const navigate = useNavigate();
-    const dispatch = iseDispatch();
+    const dispatch = useDispatch();
 
     const {
         register,

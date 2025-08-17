@@ -5,7 +5,7 @@ import axios from 'axios';
         'auth/loginUser',
         async (Credentials, { rejectWithValue }) => {
             try {
-                const response = await axios.post('/api/login', Credentials);
+                const response = await api.post('/api/login', Credentials);
                 return response.data;
             } catch (error) {
                 return rejectWithValue(error.response.data || 'gagal login');

@@ -16,16 +16,24 @@ export default function Register() {
     
     const password = watch("password");
 
-    const onSubmit = (data) => {
-        api.post ("/users", data)
-        .then(res => {
+    const onSubmit = async (data) => {
+        try {
+            const newUser = {
+                name: data.name,
+                email: data.email,
+                jenis_kelamin: data.jenisKelamin,
+                no_hp: data.phone,
+                kata_sandi: data.password
+            };
+
+            await api.post("/users", newUser);
             alert("Akun berhasil dibuat!");
             navigate("/Login");
-        })
-        .catch(err => {
+        }
+        catch (err) {
             console.error("Gagal membuat akun:", err);
             alert("Gagal membuat akun, silahkan coba lagi!");
-        })
+        }
     }
 
     return (

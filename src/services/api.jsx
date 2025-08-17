@@ -27,6 +27,23 @@ export const deleteCourse = async (id) => {
   return res.data;
 };
 
+export const getUsers = async () => {
+  const res = await api.get('/users');
+  return res.data;
+};
+
+export const createUser = async (user) => {
+  const res = await api.post('/users', user);
+  return res.data;
+};
+
+export const loginUser = async (user) => {
+  const res = await api.get('/users/login', { email: user.email, password: user.password });
+  if (res.data.token) {
+    localStorage.setItem("token", res.data.token);
+  };
+}
+
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");

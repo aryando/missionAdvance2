@@ -24,7 +24,7 @@ export default function Profil() {
             setUser(data);
             setName(data.name);
             setEmail(data.email);
-            setPhone(data.phone);
+            setPhone(data.no_hp);
         })
         .catch(err => {
             console.error("Gagal mengambil data pengguna:", err);
@@ -36,7 +36,7 @@ export default function Profil() {
     const handleSave = () => {
         if (!user?.id) return; 
         
-        api.put(`/users/${user.id}`, {name, email, phone})
+        api.put(`/users/${user.id}`, {name, email, no_hp: phone})
         .then (res => {
             setUser(res.data);
             localStorage.setItem("user", JSON.stringify(res.data));
