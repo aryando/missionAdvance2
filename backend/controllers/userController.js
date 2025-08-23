@@ -54,20 +54,20 @@ export const loginUser = (req, res) => {
         return res.status(401).json({ message: 'Email tidak ditemukan' });
         }
 
-        const user = result[0];
+        const user = results[0];
         const isMatch = await bcrypt.compare(kata_sandi, user.kata_sandi);
 
         if (!isMatch) {
             return res.status(401).json({ message: 'Kata sandi salah' });
         }
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user.user_id, email: user.email }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRES }
         );
         res.json({
             message: 'Login berhasil',
             token,
             user: {
-                id: user.id,
+                id: user.user_id,
                 name: user.name,
                 email: user.email
             }
@@ -77,9 +77,9 @@ export const loginUser = (req, res) => {
 
 export const authMiddleware = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader?.split(' ')[1];
 
-    if (1token) return res.status(401).json({ message: 'Token tidak ditemukan' });
+    if (!token) return res.status(401).json({ message: 'Token tidak ditemukan' });
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) return res.status(403).json({ message: 'Token tidak valid' });

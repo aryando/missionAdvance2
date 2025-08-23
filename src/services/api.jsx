@@ -38,7 +38,7 @@ export const createUser = async (user) => {
 };
 
 export const loginUser = async (user) => {
-  const res = await api.get('/users/login', { email: user.email, password: user.password });
+  const res = await api.get('/users/login', { email: user.email, kata_sandi: user.kata_sandi });
   if (res.data.token) {
     localStorage.setItem("token", res.data.token);
   };

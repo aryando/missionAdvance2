@@ -12,6 +12,7 @@ export default function Register() {
         handleSubmit,
         watch,
         formState: { errors },
+        getValues
     } = useForm();
     
     const password = watch("password");
@@ -23,7 +24,7 @@ export default function Register() {
                 email: data.email,
                 jenis_kelamin: data.jenisKelamin,
                 no_hp: data.phone,
-                kata_sandi: data.password
+                kata_sandi: data.kata_sandi
             };
 
             await api.post("/users", newUser);
@@ -70,7 +71,7 @@ export default function Register() {
                         register={register}
                         errors={errors} />
                     <FormInput
-                        id="password"
+                        id="kata_sandi"
                         label="Kata Sandi"
                         type="password"
                         register={register}
@@ -84,7 +85,7 @@ export default function Register() {
                         type="password"
                         register={register}
                         errors={errors}
-                        validate={(value) => value === password || "Kata sandi tidak cocok!"}/>
+                        validate={(value) => value === getValues("kata_sandi") || "Kata sandi tidak cocok!"}/>
                         
                     <div className="forgot-password">
                         <button type="button" className="forgot-password">Lupa Password?</button>

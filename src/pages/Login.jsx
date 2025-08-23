@@ -18,17 +18,23 @@ export default function Login () {
 
     const { loading, error, isLoggedIn } = useSelector((state) => state.auth);
     
-    const onSubmit = (data) => {
-        dispatch(loginUser(data))
-            .unwrap()
-            .then(user => {
-                alert("Login berhasil!");
-                navigate("/Beranda");
-            })
-            .catch(err => {
-                console.error("Gagal login:",err);
-                alert("Gagal login, silahkan coba lagi!");
+    const onSubmit = async (data) => {
+        try {
+            console.log ('Data dikirim ke server:', data);
+
+            const response = await api.post('/users/login', {
+                email: data.email,
+                kata_sandi: data.kata_sandi
             });
+            
+            console.log("Login berhasil!", response.data);
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            
+            navigate("/Beranda");
+        } catch(error) {
+                console.error("Gagal login:",error.response?.data || error.message);
+            }
     };
     return (
         <>
@@ -49,7 +55,7 @@ export default function Login () {
                         /> 
 
                         <FormInput
-                            id="password"
+                            id="kata_sandi"
                             label="Kata Sandi"
                             type="password"
                             register={register}
