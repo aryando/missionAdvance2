@@ -37,22 +37,46 @@ export const getCourseById = (req, res) => {
 };
 
 export const createCourse = (req, res) => {
-    const { title, name, role, price, image, avatar, rating } = req.body;
-    db.query('INSERT INTO courses (title, name, role, price, image, avatar, rating) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [title, name, role, price, image, avatar, rating],
-        (err, results) => {
-            res.json({ message: 'kursus berhasil ditambahkan', id: results.insertId });
+    try {
+        const { title, name, role, price, avatar, rating } = req.body;
+        const image = req.file ? `/uploads/${req.file.filename}` : null;
+
+        if (!title || !name || !role || !price || !avatar || !rating) {
+            return res.status(400).json({ error: 'Data course tidak lengkap'});
         }
-    );
+        const sql = 'INSERT INTO courses (title, name, role, price, avatar, rating, image) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        db.query(sql, [title, name, role, price, avatar, rating, image], (err, result) => {
+                if (err) {
+                    console.error('Gagal menambahkan course:', err);
+                    return res.status(500).json({ error: "Gagal menambahkan kursus" });
+                }
+                res.status(201).json({
+                    message: 'Kursus berhasil ditambahkan',
+                    id: result.insertId,
+                    image
+                });
+            }
+        );
+    } catch (error) {
+        console.error('Error createCourse:', error)
+        res.status(500).json({ error: "Terjadi kesalahan pada server", details: error.message });
+    }
 };
 
 export const updateCourse = (req, res) => {
     const { id } = req.params;
-    const { title, name, role, price, image, avatar, rating } = req.body;
-    db.query(
-        'UPDATE courses SET title =?, name=?, role=?, price=?, image=?, avatar=?, rating=? WHERE id= ?',
-        [title, name, role, price, image, avatar, rating, id],
-        (err) => {
+    const { title, name, role, price, avatar, rating } = req.body;
+    const image = req.file ? req.file.filename : null;
+
+    const sql = image
+        ? 'UPDATE courses SET title=?, name=?, role=?, price=?, avatar=?, rating=?, image=? WHERE id=?'
+        : 'UPDATE courses SET title=?, name=?, role=?, price=?, avatar=?, rating=? WHERE id=?';
+
+    const params = image
+        ? [title, name, role, price, avatar, rating, image, id]
+        : [title, name, role, price, avatar, rating, id];
+
+    db.query(sql, params, (err) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'kursus berhasil diperbarui' });
         }
