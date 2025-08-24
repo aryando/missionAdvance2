@@ -6,6 +6,7 @@ import Profil from "./pages/Profil";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import { Navigate } from "react-router-dom";
+import VerifyEmail from "./pages/VerifyEmail";
 
 
 export default function AppRoutes() {
@@ -40,6 +41,10 @@ export default function AppRoutes() {
                                 <Profil />
                             </GuestRoute>
                     }
+                />
+                <Route
+                    path="/verifikasi-email/:token"
+                    element={<VerifyEmail />}
                 />
             </Routes>
         </Router>

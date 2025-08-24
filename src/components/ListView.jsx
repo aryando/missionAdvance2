@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import CourseCard from "./CourseCard";
 import { useState, useEffect } from "react";
-import { getCourses, addCourse, updateCourse, deleteCourse } from "../services/api";
+import api, { getCourses, addCourse, updateCourse, deleteCourse } from "../services/api";
 import { setCourses } from "../store/courseSlice";
 
 export default function ListView() {
@@ -10,6 +10,23 @@ export default function ListView() {
   const courses = useSelector((state) => state.course.courses);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("title");
+  const [order, setOrder] = useState("asc");
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    fetchCourses();
+  }, [search, sortBy, order, role]);
+  
+  const fetchCourses = async () => {
+    try {
+      const res = await api.get("/courses", {
+        params: { search, sortBy, order, role }
+      });
+      dispatch(setCourses(res.data));
+    } catch (err) {
+      console.error("Gagal mengambil data course:", err);
+    }
+  };
   const [form, setForm] = useState({
     id: null,
     title: "",
@@ -107,8 +124,30 @@ const handleDelete = async (course) => {
           setSearch(e.target.value);
           setCurrentPage(1);
         }}
-        className="search-input"
       />
+
+      <div className="search">
+        <input
+        type="text"
+        placeholder="Cari kursus..."
+        onChange={(e) => setSearch(e.target.value)}
+        />
+
+      <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <option value="">Semua</option>
+      </select>
+
+      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+        <option value="title">Judul</option>
+        <option value="price">Harga</option>
+        <option value="rating">Rating</option>
+      </select>
+
+      <select value={order} onChange={(e) => setOrder(e.target.value)}>
+        <option value="asc">Naik</option>
+        <option value="desc">Turun</option>
+      </select>
+      </div>
 
       <div className="course-grid">
         {currentCourses.length > 0 ? (
